@@ -28,7 +28,7 @@ public class WebCrawler {
 
         // 1. Initialize the Queue and the Global Visited Set
         Queue<URL> remaining = new LinkedList<>();
-        Set<URL> visited = new HashSet<>(); // ⬅️ NEW: Tracks all URLs ever added to the queue
+        Set<URL> visited = new HashSet<>();
 
         // Process starting URLs
         for (String urlString : args) {

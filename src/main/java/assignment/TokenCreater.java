@@ -32,7 +32,7 @@ public class TokenCreater {
             }
             c = reader.read();
             char current = (char) c;
-            if (current == '&' || current=='|' || current=='(' || current==')') {
+            if (current == '&' || current=='|' || current=='(' || current==')' || current=='!') {
                 return String.valueOf(current);
             }
             else if (Character.isDigit(current) || Character.isLetter(current)) {

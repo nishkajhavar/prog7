@@ -5,11 +5,14 @@ import java.util.*;
 /**
  * A query engine which holds an underlying web index and can answer textual queries with a
  * collection of relevant pages.
- *
- * TODO: Implement this!
  */
 public class WebQueryEngine {
     private WebIndex index;
+
+    public WebQueryEngine(WebIndex index) {
+        this.index = index;
+    }
+
     /**
      * Returns a WebQueryEngine that uses the given Index to construct answers to queries.
      *
@@ -17,8 +20,7 @@ public class WebQueryEngine {
      * @return A WebQueryEngine ready to be queried.
      */
     public static WebQueryEngine fromIndex(WebIndex index) {
-        // TODO: Implement this!
-        return new WebQueryEngine();
+        return new WebQueryEngine(index);
     }
 
     /**
@@ -28,7 +30,7 @@ public class WebQueryEngine {
      * @return A collection of web pages satisfying the query.
      */
     public Collection<Page> query(String query) {
-// 1. Initialize Parser
+        // 1. Initialize Parser
         QueryParser parser = new QueryParser(query);
 
         // 2. Parse the query string into a tree
@@ -48,21 +50,19 @@ public class WebQueryEngine {
 
     private Set<Page> setIntersection(Set<Page> set1, Set<Page> set2) {
         Set<Page> output = new HashSet<>(set1);
-        for (Page p : set1) {
-            if (!set2.contains(p)) {
-                output.remove(p);
-            }
-        }
+        output.retainAll(set2);
         return output;
     }
 
     private Set<Page> setUnion(Set<Page> set1, Set<Page> set2) {
         Set<Page> output = new HashSet<>(set1);
-        for (Page p : set2) {
-            if (!set1.contains(p)) {
-                output.add(p);
-            }
-        }
+        output.addAll(set2);
+        return output;
+    }
+
+    private Set<Page> setDifference(Set<Page> main, Set<Page> set2) {
+        Set<Page> output = new HashSet<>(main);
+        output.removeAll(set2);
         return output;
     }
 
@@ -81,6 +81,17 @@ public class WebQueryEngine {
             else if (node instanceof OrNode) {
                 return setUnion(left, right);
             }
+        }
+        else if (node instanceof NegationNode) {
+            NegationNode negationNode = (NegationNode) node;
+            // 1. Get the results of the child expression (which must be a WordNode)
+            Set<Page> childResults = execute(negationNode.getChildNode());
+
+            // 2. Get the universe of all pages
+            Set<Page> universe = index.getAllPages();
+
+            // 3. Return the set difference (Universe - ChildResults)
+            return setDifference(universe, childResults);
         }
         return new HashSet<>();
     }

@@ -45,7 +45,23 @@ public class QueryParser {
 
     public GeneralNode parseQuery() {
         if (hasError) return null;
-        if (checkString("(")) {
+        if (checkString("!")) {
+            remove("!");
+            // The grammar mandates that '!' is followed by a word: Query -> ! word
+            if (!isWord()) {
+                System.err.println("Parse Error: Expected a word after '!', but found '" + current + "'");
+                this.hasError = true;
+                return null;
+            }
+
+            // Treat the word as a WordNode
+            String word = current;
+            getNextToken(); // Consume the word token
+
+            // Construct the NotNode, wrapping the WordNode
+            return new NegationNode(new WordNode(word));
+        }
+        else if (checkString("(")) {
             // Case: (Query Op Query)
             if (remove("(") == null) return null; // Consumes '('
 

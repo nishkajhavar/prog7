@@ -5,6 +5,7 @@ public class OperationNode extends GeneralNode {
     private GeneralNode right;
 
     public OperationNode(GeneralNode left, GeneralNode right) {
+        super(""); // Call parent constructor with empty data
         this.left = left;
         this.right = right;
     }
@@ -17,4 +18,3 @@ public class OperationNode extends GeneralNode {
         return right;
     }
 }
-
