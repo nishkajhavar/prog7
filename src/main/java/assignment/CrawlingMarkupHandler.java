@@ -32,9 +32,9 @@ public class CrawlingMarkupHandler extends AbstractSimpleMarkupHandler {
     }
 
     public void setCurrentPageURL(URL url) {
-        // Initializes the 'page' object with the URL being crawled
+        // initialize page object with URL
         this.page = new Page(url);
-        // CRITICAL: Clear the new URL list for the current page before parsing starts
+        // clear the new URL list for current page before parsing starts
         this.pageNewURLS.clear();
     }
 
